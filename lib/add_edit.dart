@@ -8,7 +8,7 @@ import 'package:path_provider/path_provider.dart';
 
 class AddEditPage extends StatefulWidget {
   final File clothingFile;
-  final List<ClothingItem> clothes;
+  final List<List <ClothingItem>> clothes;
   final ClothingItem editItem;
 
   AddEditPage(this.clothingFile, this.clothes, {this.editItem});
@@ -21,7 +21,7 @@ class AddEditPage extends StatefulWidget {
       'cool': false,
       'cold': false,
     };
-    //Flutter needs a reminder that the file isn't null for some reason
+    //Flutter needs a friendly reminder that the file isn't null for some reason
     clothingFile == null;
     return _AddEditPageState(temperatures, clothingFile, clothes,
         editItem: editItem);
@@ -36,7 +36,7 @@ class _AddEditPageState extends State<AddEditPage> {
   Map<String, bool> temperatures;
   ClothingType type;
   File clothingFile, image;
-  List<ClothingItem> clothes;
+  List<List <ClothingItem>> clothes;
   IconButton _submitButton;
   ClothingItem editItem;
   String appBarTitle;
@@ -251,8 +251,14 @@ class _AddEditPageState extends State<AddEditPage> {
     ClothingItem newItem = ClothingItem.empty();
 
     //Id
+    //Getting total length of clothes for id
+    int length = 0;
+    for(List <ClothingItem> list in clothes){
+      length += list.length;
+    }
+
     if (clothes.isNotEmpty) {
-      newItem.id = clothes[clothes.length - 1].id + 1;
+      newItem.id = length + 1;
     } else
       newItem.id = 1;
 
@@ -373,7 +379,8 @@ class _AddEditPageState extends State<AddEditPage> {
 
     //Clear and rewrite
     clothingFile.writeAsStringSync("");
-    for (ClothingItem item in clothes) {
+    for(List <ClothingItem> list in clothes)
+    for (ClothingItem item in list) {
       clothingFile.writeAsStringSync(
           "#${item.id}\n${item.name}\n${item.type}\n${item.available.toString()}\n${item.tempsAsString}\n${item.imagePath}\n",
           mode: FileMode.writeOnlyAppend);

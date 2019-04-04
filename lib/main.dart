@@ -32,7 +32,7 @@ class _MainPageState extends State<QuickPick> {
   num lon;
   bool isLoading;
   Weather weather;
-  List<ClothingItem> clothes = [];
+  List<List<ClothingItem>> clothes = [];
   File clothingFile;
 
   @override
@@ -58,8 +58,10 @@ class _MainPageState extends State<QuickPick> {
                         }
                       });
                     }),
-                _RouteButton(Icon(Icons.assignment), WardrobePage(this.clothes, this.clothingFile)),
-                _RouteButton(Icon(Icons.add), AddEditPage(this.clothingFile, this.clothes)),
+                _RouteButton(Icon(Icons.assignment),
+                    WardrobePage(this.clothes, this.clothingFile)),
+                _RouteButton(Icon(Icons.add),
+                    AddEditPage(this.clothingFile, this.clothes)),
               ],
             ),
             body: SummaryPage(
@@ -105,23 +107,53 @@ class _MainPageState extends State<QuickPick> {
     String path = (await getApplicationDocumentsDirectory()).path;
     //File("$path/clothes.dat").deleteSync();
     clothingFile = File('$path/clothes.dat');
-    if(!(await clothingFile.exists())){
+    if (!(await clothingFile.exists())) {
       clothingFile.createSync();
     }
-    List <String> clothingInfo = (await clothingFile.readAsString()).split("\n").where((line) => line != "").toList();
+    List<String> clothingInfo = (await clothingFile.readAsString())
+        .split("\n")
+        .where((line) => line != "")
+        .toList();
     print(clothingInfo.toString());
+
+    //Initializing the five lists within clothes, one for each type of clothing
+    //Order: top, bottom, top & bottom, socks, hat
+    for (int i = 0; i < 5; i++) {
+      clothes.add([]);
+    }
 
     //Converting contents of file into a list of ClothingItem objects
     for (int i = 0; i < clothingInfo.length; i += 6) {
-      clothes.add(ClothingItem(
+      ClothingItem item = ClothingItem(
           int.parse(clothingInfo[i].substring(1)),
           clothingInfo[i + 1],
           clothingInfo[i + 2],
           clothingInfo[i + 3],
           clothingInfo[i + 4].split(" "),
-          clothingInfo[i + 5]));
+          clothingInfo[i + 5]);
+      switch (item.type) {
+        case "top":
+          clothes[0].add(item);
+          break;
+        case "bottom":
+          clothes[1].add(item);
+          break;
+        case "top & bottom":
+          clothes[2].add(item);
+          break;
+        case "socks":
+          clothes[3].add(item);
+          break;
+        case "hat":
+          clothes[4].add(item);
+          break;
+      }
     }
-
+    for(List <ClothingItem> list in clothes){
+      for(ClothingItem item in list){
+        print(item.name);
+      }
+    }
     //Refresh with new info
     setState(() {
       isLoading = false;
@@ -141,8 +173,7 @@ class _RouteButton extends StatelessWidget {
     return IconButton(
       icon: icon,
       onPressed: () {
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => route));
+        Navigator.push(context, MaterialPageRoute(builder: (context) => route));
       },
     );
   }

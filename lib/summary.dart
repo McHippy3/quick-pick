@@ -5,7 +5,7 @@ import 'clothes.dart';
 class SummaryPage extends StatelessWidget {
   final bool isLoading;
   final Weather weather;
-  final List<ClothingItem> clothes;
+  final List<List<ClothingItem>> clothes;
 
   SummaryPage({this.isLoading, this.weather, this.clothes});
 
@@ -63,33 +63,42 @@ class SummaryPage extends StatelessWidget {
 
     //Adding to suggestions if item is in temperature zone and is available
     //Only one of each type of clothing is included
-    List <Widget> clothingList = [];
-    List <String> remainingTypes = ["top", "bottom", "top & bottom", "socks", "hat"];
-    for (ClothingItem item in clothes) {
-      if (item.temps.contains(weather.tempZone) && item.available && remainingTypes.contains(item.type)) {
-        //Ensuring that "top & bottom" doesn't overlap with an individual top and an individual bottom
-        if(item.type == "top & bottom"){
-          remainingTypes.remove("top");
-          remainingTypes.remove("bottom");
-        }
-        else if(item.type == "top" || item.type == "bottom"){
-          remainingTypes.remove("top & bottom");
-        }
-        remainingTypes.remove(item.type);
+    List<Widget> clothingList = [];
+    List<String> remainingTypes = [
+      "top",
+      "bottom",
+      "top & bottom",
+      "socks",
+      "hat"
+    ];
+    for (List<ClothingItem> list in clothes) {
+      for (ClothingItem item in list) {
+        if (item.temps.contains(weather.tempZone) &&
+            item.available &&
+            remainingTypes.contains(item.type)) {
+          //Ensuring that "top & bottom" doesn't overlap with an individual top and an individual bottom
+          if (item.type == "top & bottom") {
+            remainingTypes.remove("top");
+            remainingTypes.remove("bottom");
+          } else if (item.type == "top" || item.type == "bottom") {
+            remainingTypes.remove("top & bottom");
+          }
+          remainingTypes.remove(item.type);
 
-        clothingList.add(Padding(
+          clothingList.add(Padding(
             padding: EdgeInsets.only(
                 left: deviceInfo.size.width / 20,
                 right: deviceInfo.size.width / 20,
                 bottom: deviceInfo.size.width / 20),
             child: Card(
-                child: ListTile(
-                  leading: item.icon,
-                  title: Text(item.name),
-                  subtitle: Text(item.type),
-                ),
+              child: ListTile(
+                leading: item.icon,
+                title: Text(item.name),
+                subtitle: Text(item.type),
               ),
-            ));
+            ),
+          ));
+        }
       }
     }
     return clothingList;

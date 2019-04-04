@@ -6,7 +6,7 @@ import 'add_edit.dart';
 class ItemPage extends StatefulWidget{
   final ClothingItem clothingItem;
   final File clothingFile;
-  final List<ClothingItem> clothes;
+  final List<List <ClothingItem>> clothes;
 
   ItemPage(this.clothingItem, this.clothingFile, this.clothes);
 
@@ -19,7 +19,7 @@ class ItemPage extends StatefulWidget{
 class _ItemPageState extends State<ItemPage> {
   final ClothingItem clothingItem;
   final File clothingFile;
-  final List<ClothingItem> clothes;
+  final List<List <ClothingItem>> clothes;
   Image clothingImage;
   bool isLoading = false;
 

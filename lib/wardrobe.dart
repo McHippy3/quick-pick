@@ -5,7 +5,7 @@ import 'item_page.dart';
 
 /// Displays all items in the users 'wardrobe', allows deletion or modification of items
 class WardrobePage extends StatefulWidget {
-  final List<ClothingItem> clothes;
+  final List<List<ClothingItem>> clothes;
   final File clothingFile;
 
   WardrobePage(this.clothes, this.clothingFile);
@@ -17,7 +17,7 @@ class WardrobePage extends StatefulWidget {
 }
 
 class _WardrobePageState extends State<WardrobePage> {
-  final List<ClothingItem> clothes;
+  final List<List<ClothingItem>> clothes;
   final File clothingFile;
 
   _WardrobePageState(this.clothes, this.clothingFile);
@@ -37,41 +37,56 @@ class _WardrobePageState extends State<WardrobePage> {
   //Returns a list of cards containing all the clothing items
   List<Widget> _getAllItems(double paddingValue, BuildContext context) {
     List<Widget> allItems = [];
-
-    for (ClothingItem item in clothes) {
-      allItems.add(Padding(
-          padding: EdgeInsets.only(
-              left: paddingValue, right: paddingValue, top: paddingValue),
-          child: Card(
-            child: ListTile(
-              onTap: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => ItemPage(item, clothingFile, clothes)));
-              },
-              leading: item.icon,
-              title: Text(item.name),
-              subtitle: Text(item.type),
-              trailing: IconButton(
-                icon: Icon(Icons.delete),
-                onPressed: () => _deleteItem(item),
+    for (List<ClothingItem> list in clothes) {
+      for (ClothingItem item in list) {
+        allItems.add(Padding(
+            padding: EdgeInsets.only(
+                left: paddingValue, right: paddingValue, top: paddingValue),
+            child: Card(
+              child: ListTile(
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              ItemPage(item, clothingFile, clothes)));
+                },
+                leading: item.icon,
+                title: Text(item.name),
+                subtitle: Text(item.type),
+                trailing: IconButton(
+                  icon: Icon(Icons.delete),
+                  onPressed: () => _deleteItem(item),
+                ),
               ),
-            ),
-          )));
+            )));
+      }
     }
 
     return allItems;
   }
 
   void _deleteItem(ClothingItem toDeleteItem) async {
-    clothes.remove(toDeleteItem);
+    for(List <ClothingItem> list in clothes){
+      for(ClothingItem item in list){
+        if(item == toDeleteItem){
+          list.remove(item);
+          break;
+        }
+      }
+    }
     clothingFile.writeAsStringSync("");
-    if(File(toDeleteItem.imagePath).existsSync()){
+    if (File(toDeleteItem.imagePath).existsSync()) {
       imageCache.clear();
       File(toDeleteItem.imagePath).deleteSync();
     }
-    for(ClothingItem item in clothes){
-      clothingFile.writeAsStringSync("#${item.id}\n${item.name}\n${item.type}\n${item.available.toString()}\n${item.tempsAsString}\n", mode: FileMode.writeOnlyAppend);
+    for (List<ClothingItem> list in clothes) {
+      for (ClothingItem item in list) {
+        clothingFile.writeAsStringSync(
+            "#${item.id}\n${item.name}\n${item.type}\n${item.available.toString()}\n${item.tempsAsString}\n",
+            mode: FileMode.writeOnlyAppend);
+      }
     }
-    setState((){});
+    setState(() {});
   }
 }
