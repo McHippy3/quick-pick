@@ -21,6 +21,8 @@ class AddEditPage extends StatefulWidget {
       'cool': false,
       'cold': false,
     };
+    //Flutter needs a reminder that the file isn't null for some reason
+    clothingFile == null;
     return _AddEditPageState(temperatures, clothingFile, clothes,
         editItem: editItem);
   }
@@ -356,14 +358,18 @@ class _AddEditPageState extends State<AddEditPage> {
       editItem.tempsAsString = editItem.tempsAsString + "cold ";
     }
     //Creating image
-    if (image != null) {
+    if (image != null && image.path != editItem.imagePath) {
+      if(File(editItem.imagePath).existsSync()){
+        File(editItem.imagePath).deleteSync();
+      }
       String path = (await getApplicationDocumentsDirectory()).path;
       path = path + "/${editItem.id}." + (image.path.split(".")).last;
       editItem.imagePath = path;
       await image.copy(path);
-    } else {
+    } else if(image == null){
       editItem.imagePath = "n/a";
     }
+    imageCache.clear();
 
     //Clear and rewrite
     clothingFile.writeAsStringSync("");

@@ -65,6 +65,10 @@ class _WardrobePageState extends State<WardrobePage> {
   void _deleteItem(ClothingItem toDeleteItem) async {
     clothes.remove(toDeleteItem);
     clothingFile.writeAsStringSync("");
+    if(File(toDeleteItem.imagePath).existsSync()){
+      imageCache.clear();
+      File(toDeleteItem.imagePath).deleteSync();
+    }
     for(ClothingItem item in clothes){
       clothingFile.writeAsStringSync("#${item.id}\n${item.name}\n${item.type}\n${item.available.toString()}\n${item.tempsAsString}\n", mode: FileMode.writeOnlyAppend);
     }

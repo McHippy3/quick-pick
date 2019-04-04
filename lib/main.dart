@@ -103,6 +103,7 @@ class _MainPageState extends State<QuickPick> {
 
     //Opening File
     String path = (await getApplicationDocumentsDirectory()).path;
+    //File("$path/clothes.dat").deleteSync();
     clothingFile = File('$path/clothes.dat');
     if(!(await clothingFile.exists())){
       clothingFile.createSync();
