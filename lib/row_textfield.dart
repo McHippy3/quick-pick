@@ -16,7 +16,7 @@ class RowTextField extends StatelessWidget {
       this.paddingValue = 0,
       this.onChange,
       this.prefill = "",
-      this.maxLength = 30});
+      this.maxLength = 25});
 
   @override
   Widget build(BuildContext context) {

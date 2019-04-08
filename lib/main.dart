@@ -47,20 +47,18 @@ class _MainPageState extends State<QuickPick> {
         debugShowCheckedModeBanner: false,
         home: Scaffold(
             appBar: AppBar(
-              title: Text("Quick Pick"),
+              title: Text(DateTime.now().toString().substring(0,10)),
               actions: <Widget>[
                 IconButton(
                     icon: Icon(CustomIcons.thermometer),
-                    onPressed: () {
-                      setState(() {
-                        if (!isLoading) {
-                          weather.convertUnits();
-                        }
-                      });
-                    }),
-                _RouteButton(Icon(Icons.assignment),
+                    onPressed: isLoading
+                        ? null
+                        : () {
+                            setState(() => weather.convertUnits());
+                          }),
+                _RouteButton(this.isLoading, Icon(Icons.assignment),
                     WardrobePage(this.clothes, this.clothingFile)),
-                _RouteButton(Icon(Icons.add),
+                _RouteButton(this.isLoading, Icon(Icons.add),
                     AddEditPage(this.clothingFile, this.clothes)),
               ],
             ),
@@ -149,8 +147,8 @@ class _MainPageState extends State<QuickPick> {
           break;
       }
     }
-    for(List <ClothingItem> list in clothes){
-      for(ClothingItem item in list){
+    for (List<ClothingItem> list in clothes) {
+      for (ClothingItem item in list) {
         print(item.name);
       }
     }
@@ -165,16 +163,20 @@ class _MainPageState extends State<QuickPick> {
 class _RouteButton extends StatelessWidget {
   final Icon icon;
   final Widget route;
+  final bool isLoading;
 
-  _RouteButton(this.icon, this.route);
+  _RouteButton(this.isLoading, this.icon, this.route);
 
   @override
   Widget build(BuildContext context) {
     return IconButton(
       icon: icon,
-      onPressed: () {
-        Navigator.push(context, MaterialPageRoute(builder: (context) => route));
-      },
+      onPressed: isLoading
+          ? null
+          : () {
+              Navigator.push(
+                  context, MaterialPageRoute(builder: (context) => route));
+            },
     );
   }
 }

@@ -21,8 +21,7 @@ class AddEditPage extends StatefulWidget {
       'cool': false,
       'cold': false,
     };
-    //Flutter needs a friendly reminder that the file isn't null for some reason
-    clothingFile == null;
+
     return _AddEditPageState(temperatures, clothingFile, clothes,
         editItem: editItem);
   }

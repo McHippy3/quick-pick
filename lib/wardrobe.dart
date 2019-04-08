@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'clothes.dart';
 import 'dart:io';
 import 'item_page.dart';
+import 'custom_icons.dart';
 
 /// Displays all items in the users 'wardrobe', allows deletion or modification of items
 class WardrobePage extends StatefulWidget {
@@ -29,37 +30,53 @@ class _WardrobePageState extends State<WardrobePage> {
       appBar: AppBar(
         title: Text("All Clothing Items"),
       ),
-      body:
-          ListView(children: _getAllItems(deviceInfo.size.width / 20, context)),
+      body: ListView(
+          children:
+              _getAllItems(deviceInfo.size.width / 20, context, deviceInfo)),
     );
   }
 
   //Returns a list of cards containing all the clothing items
-  List<Widget> _getAllItems(double paddingValue, BuildContext context) {
+  List<Widget> _getAllItems(
+      double paddingValue, BuildContext context, MediaQueryData deviceInfo) {
     List<Widget> allItems = [];
     for (List<ClothingItem> list in clothes) {
       for (ClothingItem item in list) {
-        allItems.add(Padding(
+        allItems.add(
+          Padding(
             padding: EdgeInsets.only(
                 left: paddingValue, right: paddingValue, top: paddingValue),
             child: Card(
               child: ListTile(
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) =>
-                              ItemPage(item, clothingFile, clothes)));
-                },
-                leading: item.icon,
-                title: Text(item.name),
-                subtitle: Text(item.type),
-                trailing: IconButton(
-                  icon: Icon(Icons.delete),
-                  onPressed: () => _deleteItem(item),
-                ),
-              ),
-            )));
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                ItemPage(item, clothingFile, clothes)));
+                  },
+                  leading: item.icon,
+                  title: Text(item.name),
+                  subtitle: Text(item.type),
+                  trailing: Container(
+                    width: deviceInfo.size.width / 4,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: <Widget>[
+                        IconButton(
+                          icon: Icon(Icons.delete),
+                          onPressed: null,
+                        ),
+                        IconButton(
+                          icon: Icon(Icons.delete),
+                          onPressed: () => _deleteItem(item),
+                        ),
+                      ],
+                    ),
+                  )),
+            ),
+          ),
+        );
       }
     }
 
@@ -67,9 +84,9 @@ class _WardrobePageState extends State<WardrobePage> {
   }
 
   void _deleteItem(ClothingItem toDeleteItem) async {
-    for(List <ClothingItem> list in clothes){
-      for(ClothingItem item in list){
-        if(item == toDeleteItem){
+    for (List<ClothingItem> list in clothes) {
+      for (ClothingItem item in list) {
+        if (item == toDeleteItem) {
           list.remove(item);
           break;
         }
