@@ -29,6 +29,12 @@ class _WardrobePageState extends State<WardrobePage> {
     return Scaffold(
       appBar: AppBar(
         title: Text("All Clothing Items"),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.delete_sweep),
+            onPressed: _deleteAll,
+          ),
+        ],
       ),
       body: ListView(
           children:
@@ -48,38 +54,40 @@ class _WardrobePageState extends State<WardrobePage> {
                 left: paddingValue, right: paddingValue, top: paddingValue),
             child: Card(
               child: ListTile(
-                  onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) =>
-                                ItemPage(item, clothingFile, clothes)));
-                  },
-                  leading: item.icon,
-                  title: Text(item.name),
-                  subtitle: Text(item.type),
-                  trailing: Container(
-                    width: deviceInfo.size.width / 4,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: <Widget>[
-                        IconButton(
-                          icon: Icon(Icons.delete),
-                          onPressed: null,
-                        ),
-                        IconButton(
-                          icon: Icon(Icons.delete),
-                          onPressed: () => _deleteItem(item),
-                        ),
-                      ],
-                    ),
-                  )),
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              ItemPage(item, clothingFile, clothes)));
+                },
+                leading: item.icon,
+                title: Text(item.name),
+                subtitle: Text(item.type),
+                trailing: Container(
+                  width: deviceInfo.size.width / 4,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: <Widget>[
+                      IconButton(
+                        icon: item.available
+                            ? Icon(CustomIcons.laundry_basket)
+                            : Icon(Icons.ac_unit),
+                        onPressed: () => _changeLaundryState(item),
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.delete),
+                        onPressed: () => _deleteItem(item),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
             ),
           ),
         );
       }
     }
-
     return allItems;
   }
 
@@ -100,6 +108,27 @@ class _WardrobePageState extends State<WardrobePage> {
     for (List<ClothingItem> list in clothes) {
       for (ClothingItem item in list) {
         clothingFile.writeAsStringSync(
+            "#${item.id}\n${item.name}\n${item.type}\n${item.available.toString()}\n${item.tempsAsString}\n",
+            mode: FileMode.writeOnlyAppend);
+      }
+    }
+    setState(() {});
+  }
+
+  void _deleteAll() {
+    //Completely clearing out file
+    clothingFile.writeAsStringSync("");
+    for (List<ClothingItem> list in clothes) {
+      list.clear();
+    }
+    setState(() {});
+  }
+
+  void _changeLaundryState(ClothingItem toChangeItem) async {
+    toChangeItem.available = !toChangeItem.available;
+    for (List<ClothingItem> list in clothes) {
+      for (ClothingItem item in list) {
+        clothingFile.writeAsString(
             "#${item.id}\n${item.name}\n${item.type}\n${item.available.toString()}\n${item.tempsAsString}\n",
             mode: FileMode.writeOnlyAppend);
       }
