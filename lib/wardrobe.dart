@@ -72,8 +72,8 @@ class _WardrobePageState extends State<WardrobePage> {
                     children: <Widget>[
                       IconButton(
                         icon: item.available
-                            ? Icon(CustomIcons.laundry_basket)
-                            : Icon(Icons.refresh),
+                            ? Icon(CustomIcons.basket)
+                            : Icon(CustomIcons.clean),
                         onPressed: () => _changeLaundryState(item),
                       ),
                       IconButton(

@@ -37,6 +37,7 @@ class CustomIcons {
   static const IconData top_hat = const IconData(0xe802, fontFamily: _kFontFam);
   static const IconData accessibility = const IconData(0xe803, fontFamily: _kFontFam);
   static const IconData thermometer = const IconData(0xe804, fontFamily: _kFontFam);
-  static const IconData laundry_basket = const IconData(0xe805, fontFamily: _kFontFam);
+  static const IconData clean = const IconData(0xe805, fontFamily: _kFontFam);
+  static const IconData basket = const IconData(0xe806, fontFamily: _kFontFam);
   static const IconData shirt = const IconData(0xe82c, fontFamily: _kFontFam);
 }

@@ -101,7 +101,7 @@ class SummaryPage extends StatelessWidget {
                   title: Text(item.name),
                   subtitle: Text(item.type),
                   trailing: IconButton(
-                    icon: Icon(CustomIcons.laundry_basket),
+                    icon: Icon(CustomIcons.basket),
                     onPressed: () => _changeLaundryState(item),
                   ),
                 ),
