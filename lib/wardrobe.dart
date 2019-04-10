@@ -29,6 +29,7 @@ class _WardrobePageState extends State<WardrobePage> {
     return Scaffold(
       appBar: AppBar(
         title: Text("All Clothing Items"),
+        backgroundColor: Colors.cyan,
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.delete_sweep),
@@ -72,7 +73,7 @@ class _WardrobePageState extends State<WardrobePage> {
                       IconButton(
                         icon: item.available
                             ? Icon(CustomIcons.laundry_basket)
-                            : Icon(Icons.ac_unit),
+                            : Icon(Icons.refresh),
                         onPressed: () => _changeLaundryState(item),
                       ),
                       IconButton(

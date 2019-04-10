@@ -50,6 +50,7 @@ class _ItemPageState extends State<ItemPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text("Item Screen"),
+        backgroundColor: Colors.cyan,
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.edit),

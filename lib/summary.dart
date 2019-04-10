@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
 import 'weather.dart';
 import 'clothes.dart';
+import 'custom_icons.dart';
+import 'dart:io';
 
 class SummaryPage extends StatelessWidget {
   final bool isLoading;
   final Weather weather;
   final List<List<ClothingItem>> clothes;
+  final Function callback;
+  final File clothingFile;
 
-  SummaryPage({this.isLoading, this.weather, this.clothes});
+  SummaryPage({this.isLoading, this.weather, this.clothes, this.callback, this.clothingFile});
 
   Widget build(BuildContext context) {
     if (isLoading) {
@@ -85,22 +89,40 @@ class SummaryPage extends StatelessWidget {
           }
           remainingTypes.remove(item.type);
 
-          clothingList.add(Padding(
-            padding: EdgeInsets.only(
-                left: deviceInfo.size.width / 20,
-                right: deviceInfo.size.width / 20,
-                bottom: deviceInfo.size.width / 20),
-            child: Card(
-              child: ListTile(
-                leading: item.icon,
-                title: Text(item.name),
-                subtitle: Text(item.type),
+          clothingList.add(
+            Padding(
+              padding: EdgeInsets.only(
+                  left: deviceInfo.size.width / 20,
+                  right: deviceInfo.size.width / 20,
+                  bottom: deviceInfo.size.width / 20),
+              child: Card(
+                child: ListTile(
+                  leading: item.icon,
+                  title: Text(item.name),
+                  subtitle: Text(item.type),
+                  trailing: IconButton(
+                    icon: Icon(CustomIcons.laundry_basket),
+                    onPressed: () => _changeLaundryState(item),
+                  ),
+                ),
               ),
             ),
-          ));
+          );
         }
       }
     }
     return clothingList;
+  }
+
+    void _changeLaundryState(ClothingItem toChangeItem) async {
+    toChangeItem.available = !toChangeItem.available;
+    for (List<ClothingItem> list in clothes) {
+      for (ClothingItem item in list) {
+        clothingFile.writeAsString(
+            "#${item.id}\n${item.name}\n${item.type}\n${item.available.toString()}\n${item.tempsAsString}\n",
+            mode: FileMode.writeOnlyAppend);
+      }
+    }
+    callback();
   }
 }

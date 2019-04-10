@@ -44,26 +44,29 @@ class _MainPageState extends State<QuickPick> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        debugShowCheckedModeBanner: false,
-        home: Scaffold(
-            appBar: AppBar(
-              title: Text(DateTime.now().toString().substring(0,10)),
-              actions: <Widget>[
-                IconButton(
-                    icon: Icon(CustomIcons.thermometer),
-                    onPressed: isLoading
-                        ? null
-                        : () {
-                            setState(() => weather.convertUnits());
-                          }),
-                _RouteButton(this.isLoading, Icon(Icons.assignment),
-                    WardrobePage(this.clothes, this.clothingFile)),
-                _RouteButton(this.isLoading, Icon(Icons.add),
-                    AddEditPage(this.clothingFile, this.clothes)),
-              ],
-            ),
-            body: SummaryPage(
-                isLoading: isLoading, weather: weather, clothes: clothes)));
+      debugShowCheckedModeBanner: false,
+      home: Scaffold(
+        appBar: AppBar(
+          title: Text(DateTime.now().toString().substring(0, 10)),
+          backgroundColor: Colors.cyan,
+          actions: <Widget>[
+            IconButton(
+                icon: Icon(CustomIcons.thermometer),
+                onPressed: isLoading
+                    ? null
+                    : () {
+                        setState(() => weather.convertUnits());
+                      }),
+            _RouteButton(this.isLoading, Icon(Icons.assignment),
+                WardrobePage(this.clothes, this.clothingFile)),
+            _RouteButton(this.isLoading, Icon(Icons.add),
+                AddEditPage(this.clothingFile, this.clothes)),
+          ],
+        ),
+        body: SummaryPage(
+            isLoading: isLoading, weather: weather, clothes: clothes, callback: setStateMethod, clothingFile: this.clothingFile,),
+      ),
+    );
   }
 
   //Made partly with the help of https://dragosholban.com/2018/07/01/how-to-build-a-simple-weather-app-in-flutter/ and https://flutter.dev/docs/cookbook/networking/fetch-data
@@ -156,6 +159,10 @@ class _MainPageState extends State<QuickPick> {
     setState(() {
       isLoading = false;
     });
+  }
+
+  void setStateMethod(){
+    setState(() {});
   }
 }
 

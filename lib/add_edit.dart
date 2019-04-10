@@ -88,6 +88,7 @@ class _AddEditPageState extends State<AddEditPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(appBarTitle),
+        backgroundColor: Colors.cyan,
         actions: <Widget>[_submitButton],
       ),
       body: ListView(children: <Widget>[
