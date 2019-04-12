@@ -11,7 +11,12 @@ class SummaryPage extends StatelessWidget {
   final Function callback;
   final File clothingFile;
 
-  SummaryPage({this.isLoading, this.weather, this.clothes, this.callback, this.clothingFile});
+  SummaryPage(
+      {this.isLoading,
+      this.weather,
+      this.clothes,
+      this.callback,
+      this.clothingFile});
 
   Widget build(BuildContext context) {
     if (isLoading) {
@@ -21,40 +26,50 @@ class SummaryPage extends StatelessWidget {
     //Getting info such as screen size
     MediaQueryData deviceInfo = MediaQuery.of(context);
 
-    return ListView(children: <Widget>[
-      Center(
-          child: Image.network(
-              "http://openweathermap.org/img/w/${weather.imageId}.png")),
-      Text(
-        "${weather.city}",
-        textAlign: TextAlign.center,
-        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30),
-      ),
-      Text(
-        "${weather.description}",
-        textAlign: TextAlign.center,
-        style: TextStyle(fontWeight: FontWeight.normal, fontSize: 20),
-      ),
-      Text(
-        weather.getFormattedTemp().toString(),
-        textAlign: TextAlign.center,
-        style: TextStyle(fontWeight: FontWeight.normal, fontSize: 20),
-      ),
-      Padding(
-        padding: const EdgeInsets.only(top: 60),
-        child: Text(
-          "Clothing Suggestions",
-          textAlign: TextAlign.center,
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30),
+    return ListView(
+      children: <Widget>[
+        AnimatedOpacity(
+          opacity: 1.0,
+          duration: Duration(seconds: 10),
+          child: Column(
+            children: <Widget>[
+              Center(
+                  child: Image.network(
+                      "http://openweathermap.org/img/w/${weather.imageId}.png")),
+              Text(
+                "${weather.city}",
+                textAlign: TextAlign.center,
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30),
+              ),
+              Text(
+                "${weather.description}",
+                textAlign: TextAlign.center,
+                style: TextStyle(fontWeight: FontWeight.normal, fontSize: 20),
+              ),
+              Text(
+                weather.getFormattedTemp().toString(),
+                textAlign: TextAlign.center,
+                style: TextStyle(fontWeight: FontWeight.normal, fontSize: 20),
+              ),
+            ],
+          ),
         ),
-      ),
-      Padding(
-        padding: const EdgeInsets.only(top: 10),
-        child: Column(
-          children: _getSuggestion(deviceInfo),
+        Padding(
+          padding: const EdgeInsets.only(top: 60),
+          child: Text(
+            "Clothing Suggestions",
+            textAlign: TextAlign.center,
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30),
+          ),
         ),
-      ),
-    ]);
+        Padding(
+          padding: const EdgeInsets.only(top: 10),
+          child: Column(
+            children: _getSuggestion(deviceInfo),
+          ),
+        ),
+      ],
+    );
   }
 
   //Returns a column of tiles containing all the clothing options
@@ -114,7 +129,7 @@ class SummaryPage extends StatelessWidget {
     return clothingList;
   }
 
-    void _changeLaundryState(ClothingItem toChangeItem) async {
+  void _changeLaundryState(ClothingItem toChangeItem) async {
     toChangeItem.available = !toChangeItem.available;
     for (List<ClothingItem> list in clothes) {
       for (ClothingItem item in list) {

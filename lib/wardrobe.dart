@@ -66,7 +66,7 @@ class _WardrobePageState extends State<WardrobePage> {
                 title: Text(item.name),
                 subtitle: Text(item.type),
                 trailing: Container(
-                  width: deviceInfo.size.width / 3.5,
+                  width: deviceInfo.size.width / 3,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[

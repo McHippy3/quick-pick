@@ -82,10 +82,6 @@ class _MainPageState extends State<QuickPick> {
     } on Exception {
       lat = 0;
       lon = 0;
-      Scaffold.of(context).showSnackBar(SnackBar(
-        content: Text("Location must be enabled"),
-        duration: Duration(seconds: 2),
-      ));
     }
 
     //Getting weather data
