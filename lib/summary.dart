@@ -117,7 +117,7 @@ class SummaryPage extends StatelessWidget {
                   subtitle: Text(item.type),
                   trailing: IconButton(
                     icon: Icon(CustomIcons.basket),
-                    onPressed: () => _changeLaundryState(item),
+                    onPressed: () => ClothingItem.changeLaundryState(item, clothingFile, clothes, callback),
                   ),
                 ),
               ),
@@ -127,17 +127,5 @@ class SummaryPage extends StatelessWidget {
       }
     }
     return clothingList;
-  }
-
-  void _changeLaundryState(ClothingItem toChangeItem) async {
-    toChangeItem.available = !toChangeItem.available;
-    for (List<ClothingItem> list in clothes) {
-      for (ClothingItem item in list) {
-        clothingFile.writeAsString(
-            "#${item.id}\n${item.name}\n${item.type}\n${item.available.toString()}\n${item.tempsAsString}\n",
-            mode: FileMode.writeOnlyAppend);
-      }
-    }
-    callback();
   }
 }

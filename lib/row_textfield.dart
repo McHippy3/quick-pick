@@ -20,7 +20,7 @@ class RowTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    TextField tf = TextField(controller: controller, maxLength: maxLength, onChanged: (val) => {onChange()});
+    TextField tf = TextField(controller: controller, maxLength: maxLength, onChanged: (val) => onChange());
     return Row(
       children: <Widget>[
         Container(

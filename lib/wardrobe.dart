@@ -65,23 +65,11 @@ class _WardrobePageState extends State<WardrobePage> {
                 leading: item.icon,
                 title: Text(item.name),
                 subtitle: Text(item.type),
-                trailing: Container(
-                  width: deviceInfo.size.width / 3,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: <Widget>[
-                      IconButton(
-                        icon: item.available
-                            ? Icon(CustomIcons.basket)
-                            : Icon(CustomIcons.clean),
-                        onPressed: () => _changeLaundryState(item),
-                      ),
-                      IconButton(
-                        icon: Icon(Icons.delete),
-                        onPressed: () => _deleteItem(item),
-                      ),
-                    ],
-                  ),
+                trailing: IconButton(
+                  icon: item.available
+                      ? Icon(CustomIcons.basket)
+                      : Icon(CustomIcons.clean),
+                  onPressed: () => ClothingItem.changeLaundryState(item, clothingFile, clothes, setStateMethod),
                 ),
               ),
             ),
@@ -90,30 +78,6 @@ class _WardrobePageState extends State<WardrobePage> {
       }
     }
     return allItems;
-  }
-
-  void _deleteItem(ClothingItem toDeleteItem) async {
-    for (List<ClothingItem> list in clothes) {
-      for (ClothingItem item in list) {
-        if (item == toDeleteItem) {
-          list.remove(item);
-          break;
-        }
-      }
-    }
-    clothingFile.writeAsStringSync("");
-    if (File(toDeleteItem.imagePath).existsSync()) {
-      imageCache.clear();
-      File(toDeleteItem.imagePath).deleteSync();
-    }
-    for (List<ClothingItem> list in clothes) {
-      for (ClothingItem item in list) {
-        clothingFile.writeAsStringSync(
-            "#${item.id}\n${item.name}\n${item.type}\n${item.available.toString()}\n${item.tempsAsString}\n",
-            mode: FileMode.writeOnlyAppend);
-      }
-    }
-    setState(() {});
   }
 
   void _deleteAll() {
@@ -125,15 +89,9 @@ class _WardrobePageState extends State<WardrobePage> {
     setState(() {});
   }
 
-  void _changeLaundryState(ClothingItem toChangeItem) async {
-    toChangeItem.available = !toChangeItem.available;
-    for (List<ClothingItem> list in clothes) {
-      for (ClothingItem item in list) {
-        clothingFile.writeAsString(
-            "#${item.id}\n${item.name}\n${item.type}\n${item.available.toString()}\n${item.tempsAsString}\n",
-            mode: FileMode.writeOnlyAppend);
-      }
-    }
-    setState(() {});
+  //Used as a callback 
+  void setStateMethod(){
+    setState(() { 
+    });
   }
 }
