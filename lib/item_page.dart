@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'clothes.dart';
 import 'dart:io';
 import 'add_edit.dart';
-import 'main.dart';
 
 class ItemPage extends StatefulWidget {
   final ClothingItem clothingItem;

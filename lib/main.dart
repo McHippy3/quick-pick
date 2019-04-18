@@ -14,9 +14,9 @@ import 'custom_icons.dart';
 /** 
  * TODOS: 
  * Name routes so that edit can route back to wardrobe
- * Suggestions only include one of each type
- * laundry system
- * app icon
+ * random selection of clothing items
+ * save most recent selection date and stuff like that
+ * animations
  * make apk
  * **/
 
