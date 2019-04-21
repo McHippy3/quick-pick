@@ -251,16 +251,15 @@ class _AddEditPageState extends State<AddEditPage> {
     ClothingItem newItem = ClothingItem.empty();
 
     //Id
-    //Getting total length of clothes for id
-    int length = 0;
+    //highest current id + 1
+    newItem.id = 1;
     for(List <ClothingItem> list in clothes){
-      length += list.length;
+      for(ClothingItem item in list){
+        if(item.id >= newItem.id){
+          newItem.id = item.id + 1;
+        }
+      }
     }
-
-    if (clothes.isNotEmpty) {
-      newItem.id = length + 1;
-    } else
-      newItem.id = 1;
 
     //Name
     newItem.name = _nameController.text;
@@ -377,14 +376,7 @@ class _AddEditPageState extends State<AddEditPage> {
     }
     imageCache.clear();
 
-    //Clear and rewrite
-    clothingFile.writeAsStringSync("");
-    for(List <ClothingItem> list in clothes)
-    for (ClothingItem item in list) {
-      clothingFile.writeAsStringSync(
-          "#${item.id}\n${item.name}\n${item.type}\n${item.available.toString()}\n${item.tempsAsString}\n${item.imagePath}\n",
-          mode: FileMode.writeOnlyAppend);
-    }
+    ClothingItem.rewriteFile(clothes, clothingFile);
 
     Navigator.push(
         context, MaterialPageRoute(builder: (context) => QuickPick()));

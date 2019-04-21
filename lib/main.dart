@@ -44,6 +44,7 @@ class _MainPageState extends State<QuickPick> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      title: "Quick Pick",
       debugShowCheckedModeBanner: false,
       home: Scaffold(
         appBar: AppBar(

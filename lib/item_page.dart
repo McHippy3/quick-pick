@@ -119,13 +119,7 @@ class _ItemPageState extends State<ItemPage> {
       imageCache.clear();
       File(toDeleteItem.imagePath).deleteSync();
     }
-    for (List<ClothingItem> list in clothes) {
-      for (ClothingItem item in list) {
-        clothingFile.writeAsStringSync(
-            "#${item.id}\n${item.name}\n${item.type}\n${item.available.toString()}\n${item.tempsAsString}\n",
-            mode: FileMode.writeOnlyAppend);
-      }
-    }
+    ClothingItem.rewriteFile(clothes, clothingFile);
     Navigator.pop(context);
   }
 }

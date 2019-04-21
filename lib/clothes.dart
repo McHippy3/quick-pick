@@ -12,8 +12,14 @@ class ClothingItem {
   Icon icon;
 
   //Pass in information from file
-  ClothingItem(this.id, this.name, this.type, String available,
-      List<String> temperatures, this.imagePath,) {
+  ClothingItem(
+    this.id,
+    this.name,
+    this.type,
+    String available,
+    List<String> temperatures,
+    this.imagePath,
+  ) {
     if (available == "true") {
       this.available = true;
     } else {
@@ -65,7 +71,8 @@ class ClothingItem {
   ClothingItem.empty();
 
   //Placing item in or out of the "laundry basket"
-  static void changeLaundryState(ClothingItem item, File clothingFile, List <List<ClothingItem>> clothes, Function callBack){
+  static void changeLaundryState(ClothingItem item, File clothingFile,
+      List<List<ClothingItem>> clothes, Function callBack) {
     item.available = !item.available;
     //Clearing the file
     clothingFile.writeAsStringSync("");
@@ -77,5 +84,17 @@ class ClothingItem {
       }
     }
     callBack();
+  }
+
+  static void rewriteFile(List<List<ClothingItem>> clothes, File clothingFile) {
+    //Clear and rewrite file
+    clothingFile.writeAsStringSync("");
+    for (List<ClothingItem> list in clothes) {
+      for (ClothingItem item in list) {
+        clothingFile.writeAsStringSync(
+            "#${item.id}\n${item.name}\n${item.type}\n${item.available.toString()}\n${item.tempsAsString}\n${item.imagePath}\n",
+            mode: FileMode.writeOnlyAppend);
+      }
+    }
   }
 }
