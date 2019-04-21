@@ -74,15 +74,9 @@ class ClothingItem {
   static void changeLaundryState(ClothingItem item, File clothingFile,
       List<List<ClothingItem>> clothes, Function callBack) {
     item.available = !item.available;
-    //Clearing the file
-    clothingFile.writeAsStringSync("");
-    for (List<ClothingItem> list in clothes) {
-      for (ClothingItem item in list) {
-        clothingFile.writeAsString(
-            "#${item.id}\n${item.name}\n${item.type}\n${item.available.toString()}\n${item.tempsAsString}\n${item.imagePath}\n",
-            mode: FileMode.writeOnlyAppend);
-      }
-    }
+
+    ClothingItem.rewriteFile(clothes, clothingFile);
+    
     callBack();
   }
 

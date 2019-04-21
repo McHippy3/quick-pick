@@ -316,9 +316,7 @@ class _AddEditPageState extends State<AddEditPage> {
     clothingFile.writeAsStringSync(
         "#${newItem.id}\n${newItem.name}\n${newItem.type}\n${newItem.available.toString()}\n${newItem.tempsAsString}\n${newItem.imagePath}\n",
         mode: FileMode.writeOnlyAppend);
-
-    Navigator.push(
-        context, MaterialPageRoute(builder: (context) => QuickPick()));
+    Navigator.popAndPushNamed(context, '/main');
   }
 
   void _editClothingItem() async {
@@ -377,8 +375,6 @@ class _AddEditPageState extends State<AddEditPage> {
     imageCache.clear();
 
     ClothingItem.rewriteFile(clothes, clothingFile);
-
-    Navigator.push(
-        context, MaterialPageRoute(builder: (context) => QuickPick()));
+    Navigator.popAndPushNamed(context, '/main');
   }
 }

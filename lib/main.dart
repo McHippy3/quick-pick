@@ -13,21 +13,20 @@ import 'custom_icons.dart';
 
 /** 
  * TODOS: 
- * Name routes so that edit can route back to wardrobe
  * random selection of clothing items
  * save most recent selection date and stuff like that
  * animations
  * make apk
  * **/
 
-void main() => runApp(QuickPick());
+void main() => runApp(MainPage());
 
-class QuickPick extends StatefulWidget {
+class MainPage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => _MainPageState();
 }
 
-class _MainPageState extends State<QuickPick> {
+class _MainPageState extends State<MainPage> {
   num lat;
   num lon;
   bool isLoading;
@@ -46,6 +45,9 @@ class _MainPageState extends State<QuickPick> {
     return MaterialApp(
       title: "Quick Pick",
       debugShowCheckedModeBanner: false,
+      routes: {
+        '/main': (context) => MainPage(),
+      },
       home: Scaffold(
         appBar: AppBar(
           title: Text(DateTime.now().toString().substring(0, 10)),
@@ -145,11 +147,6 @@ class _MainPageState extends State<QuickPick> {
         case "hat":
           clothes[4].add(item);
           break;
-      }
-    }
-    for (List<ClothingItem> list in clothes) {
-      for (ClothingItem item in list) {
-        print(item.name);
       }
     }
     //Refresh with new info

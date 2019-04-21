@@ -114,7 +114,6 @@ class _ItemPageState extends State<ItemPage> {
         }
       }
     }
-    clothingFile.writeAsStringSync("");
     if (File(toDeleteItem.imagePath).existsSync()) {
       imageCache.clear();
       File(toDeleteItem.imagePath).deleteSync();
