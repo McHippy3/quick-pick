@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'row_textfield.dart';
 import 'dart:io';
 import 'clothes.dart';
-import 'main.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 

@@ -9,17 +9,26 @@ import 'add_edit.dart';
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 import 'wardrobe.dart';
-import 'custom_icons.dart';
+import 'settings.dart';
 
 /** 
  * TODOS: 
- * random selection of clothing items
  * save most recent selection date and stuff like that
+ * save record
  * animations
  * make apk
  * **/
 
-void main() => runApp(MainPage());
+void main() => runApp(
+      MaterialApp(
+        title: "Quick Pick",
+        debugShowCheckedModeBanner: false,
+        routes: {
+          '/main': (context) => MainPage(),
+        },
+        home: MainPage(),
+      ),
+    );
 
 class MainPage extends StatefulWidget {
   @override
@@ -42,32 +51,53 @@ class _MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: "Quick Pick",
-      debugShowCheckedModeBanner: false,
-      routes: {
-        '/main': (context) => MainPage(),
-      },
-      home: Scaffold(
-        appBar: AppBar(
-          title: Text(DateTime.now().toString().substring(0, 10)),
-          backgroundColor: Colors.cyan,
-          actions: <Widget>[
-            IconButton(
-                icon: Icon(CustomIcons.thermometer),
-                onPressed: isLoading
-                    ? null
-                    : () {
-                        setState(() => weather.convertUnits());
-                      }),
-            _RouteButton(this.isLoading, Icon(Icons.assignment),
-                WardrobePage(this.clothes, this.clothingFile)),
-            _RouteButton(this.isLoading, Icon(Icons.add),
-                AddEditPage(this.clothingFile, this.clothes)),
-          ],
-        ),
-        body: SummaryPage(
-            isLoading: isLoading, weather: weather, clothes: clothes, callback: setStateMethod, clothingFile: this.clothingFile,),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(DateTime.now().toString().substring(0, 10)),
+        backgroundColor: Colors.cyan,
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.assignment),
+            onPressed: isLoading
+                ? null
+                : () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            WardrobePage(clothes, clothingFile),
+                      ),
+                    ),
+          ),
+          IconButton(
+            icon: Icon(Icons.settings),
+            onPressed: isLoading
+                ? null
+                : () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            SettingsPage(),
+                      ),
+                    ),
+          ),
+        ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.add),
+        onPressed: () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) =>
+                    AddEditPage(this.clothingFile, this.clothes),
+              ),
+            ),
+      ),
+      body: SummaryPage(
+        isLoading: isLoading,
+        weather: weather,
+        clothes: clothes,
+        callback: setStateMethod,
+        clothingFile: this.clothingFile,
       ),
     );
   }
@@ -155,29 +185,8 @@ class _MainPageState extends State<MainPage> {
     });
   }
 
-  void setStateMethod(){
+  //Used for callback
+  void setStateMethod() {
     setState(() {});
-  }
-}
-
-//Routes must be in a separate class because of the navigator requirement
-class _RouteButton extends StatelessWidget {
-  final Icon icon;
-  final Widget route;
-  final bool isLoading;
-
-  _RouteButton(this.isLoading, this.icon, this.route);
-
-  @override
-  Widget build(BuildContext context) {
-    return IconButton(
-      icon: icon,
-      onPressed: isLoading
-          ? null
-          : () {
-              Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => route));
-            },
-    );
   }
 }
