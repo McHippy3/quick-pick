@@ -3,7 +3,6 @@ import 'weather.dart';
 import 'clothes.dart';
 import 'custom_icons.dart';
 import 'dart:io';
-import 'dart:math';
 
 class SummaryPage extends StatelessWidget {
   final bool isLoading;
@@ -29,31 +28,27 @@ class SummaryPage extends StatelessWidget {
 
     return ListView(
       children: <Widget>[
-        AnimatedOpacity(
-          opacity: 1.0,
-          duration: Duration(seconds: 10),
-          child: Column(
-            children: <Widget>[
-              Center(
-                  child: Image.network(
-                      "http://openweathermap.org/img/w/${weather.imageId}.png")),
-              Text(
-                "${weather.city}",
-                textAlign: TextAlign.center,
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30),
-              ),
-              Text(
-                "${weather.description}",
-                textAlign: TextAlign.center,
-                style: TextStyle(fontWeight: FontWeight.normal, fontSize: 20),
-              ),
-              Text(
-                weather.getFormattedTemp().toString(),
-                textAlign: TextAlign.center,
-                style: TextStyle(fontWeight: FontWeight.normal, fontSize: 20),
-              ),
-            ],
-          ),
+        Column(
+          children: <Widget>[
+            Center(
+                child: Image.network(
+                    "http://openweathermap.org/img/w/${weather.imageId}.png")),
+            Text(
+              "${weather.city}",
+              textAlign: TextAlign.center,
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30),
+            ),
+            Text(
+              "${weather.description}",
+              textAlign: TextAlign.center,
+              style: TextStyle(fontWeight: FontWeight.normal, fontSize: 20),
+            ),
+            Text(
+              weather.getFormattedTemp().toString(),
+              textAlign: TextAlign.center,
+              style: TextStyle(fontWeight: FontWeight.normal, fontSize: 20),
+            ),
+          ],
         ),
         Padding(
           padding: const EdgeInsets.only(top: 60),
@@ -92,28 +87,19 @@ class SummaryPage extends StatelessWidget {
       "hat"
     ];
     for (List<ClothingItem> list in clothes) {
-      //Making list of all the available options
-      List <ClothingItem> availableItemsList = [];
-      for(ClothingItem item in list){
-        if(item.available){
-          availableItemsList.add(item);
-        }
-      }
-      if (availableItemsList.isNotEmpty) {
-        //Selecting random item
-        ClothingItem item = availableItemsList[Random().nextInt(availableItemsList.length)];
-        if (remainingTypes.contains(item.type)) {
-          remainingTypes.remove(item.type);
-
-          //Preventing bottom from overlapping with top & bottom
+      for (ClothingItem item in list) {
+        if (item.temps.contains(weather.tempZone) &&
+            item.available &&
+            remainingTypes.contains(item.type)) {
+          //Ensuring that "top & bottom" doesn't overlap with an individual top and an individual bottom
           if (item.type == "top & bottom") {
             remainingTypes.remove("top");
             remainingTypes.remove("bottom");
           } else if (item.type == "top" || item.type == "bottom") {
             remainingTypes.remove("top & bottom");
           }
+          remainingTypes.remove(item.type);
 
-          //Item card
           clothingList.add(
             Padding(
               padding: EdgeInsets.only(
