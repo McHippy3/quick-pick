@@ -52,6 +52,7 @@ class _MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       appBar: AppBar(
         title: Text(DateTime.now().toString().substring(0, 10)),
@@ -77,7 +78,7 @@ class _MainPageState extends State<MainPage> {
                       context,
                       MaterialPageRoute(
                         builder: (context) =>
-                            SettingsPage(),
+                            SettingsPage(weather),
                       ),
                     ),
           ),
@@ -180,6 +181,23 @@ class _MainPageState extends State<MainPage> {
           break;
       }
     }
+
+    //Setting preferred options
+    updatePreferences();
+  }
+
+  //Reads from user's shared preferences
+  void updatePreferences() async{
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    int prefUnits = prefs.getInt('temp_units');
+    //Create the shared preference if it doesn't exist
+    if(prefUnits == null){
+      prefs.setInt('temp_units', weather.unit);
+    }
+    if(prefUnits != weather.unit){
+      weather.convertUnits();
+    }
+
     //Refresh with new info
     setState(() {
       isLoading = false;

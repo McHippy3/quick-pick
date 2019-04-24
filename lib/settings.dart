@@ -1,14 +1,25 @@
 import 'package:flutter/material.dart';
+import 'weather.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingsPage extends StatefulWidget{
+  
+  final Weather weather;
+  SettingsPage(this.weather);
+  
   @override
   State<StatefulWidget> createState() {
-    return _SettingsPageState();
+    return _SettingsPageState(weather);
   }
 }
 
 class _SettingsPageState extends State <SettingsPage> {
   int temperature;
+  Weather weather;
+
+  _SettingsPageState(this.weather){
+    temperature = weather.unit;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +37,8 @@ class _SettingsPageState extends State <SettingsPage> {
               value: temperature,
               onChanged: (int newValue) {
                 setState(() {
-                 temperature = newValue; 
+                 temperature = newValue;
+                 updatePrefs(); 
                 });
               },
               items: <DropdownMenuItem<int>> [
@@ -45,5 +57,11 @@ class _SettingsPageState extends State <SettingsPage> {
         ],
       ),
     );
+  }
+
+  void updatePrefs() async{
+    weather.convertUnits();
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setInt('temp_units', weather.unit);
   }
 }
