@@ -11,6 +11,7 @@ import 'package:path_provider/path_provider.dart';
 import 'wardrobe.dart';
 import 'settings.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'helpers.dart';
 
 /** 
  * TODOS: 
@@ -40,6 +41,7 @@ class _MainPageState extends State<MainPage> {
   num lat;
   num lon;
   bool isLoading;
+  PrimitiveWrapper autoSelect = PrimitiveWrapper(false);
   Weather weather;
   List<List<ClothingItem>> clothes = [];
   File clothingFile;
@@ -52,7 +54,6 @@ class _MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       appBar: AppBar(
         title: Text(DateTime.now().toString().substring(0, 10)),
@@ -77,8 +78,7 @@ class _MainPageState extends State<MainPage> {
                 : () => Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) =>
-                            SettingsPage(weather),
+                        builder: (context) => SettingsPage(weather, autoSelect),
                       ),
                     ),
           ),
@@ -86,15 +86,18 @@ class _MainPageState extends State<MainPage> {
       ),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
-        onPressed: () => Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) =>
-                    AddEditPage(this.clothingFile, this.clothes),
-              ),
-            ),
+        onPressed: isLoading
+            ? null
+            : () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        AddEditPage(this.clothingFile, this.clothes),
+                  ),
+                ),
       ),
       body: SummaryPage(
+        autoSelect: autoSelect.primitive,
         isLoading: isLoading,
         weather: weather,
         clothes: clothes,
@@ -187,14 +190,16 @@ class _MainPageState extends State<MainPage> {
   }
 
   //Reads from user's shared preferences
-  void updatePreferences() async{
+  void updatePreferences() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     int prefUnits = prefs.getInt('temp_units');
+    autoSelect.primitive = prefs.getBool('auto_select');
     //Create the shared preference if it doesn't exist
-    if(prefUnits == null){
+    if (prefUnits == null || autoSelect.primitive == null) {
       prefs.setInt('temp_units', weather.unit);
+      prefs.setBool('auto_select', true);
     }
-    if(prefUnits != weather.unit){
+    if (prefUnits != weather.unit) {
       weather.convertUnits();
     }
 

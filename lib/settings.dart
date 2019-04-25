@@ -1,23 +1,27 @@
 import 'package:flutter/material.dart';
 import 'weather.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'helpers.dart';
 
 class SettingsPage extends StatefulWidget{
   
   final Weather weather;
-  SettingsPage(this.weather);
+  final PrimitiveWrapper autoSelect;
+  
+  SettingsPage(this.weather, this.autoSelect);
   
   @override
   State<StatefulWidget> createState() {
-    return _SettingsPageState(weather);
+    return _SettingsPageState(weather, autoSelect);
   }
 }
 
 class _SettingsPageState extends State <SettingsPage> {
   int temperature;
   Weather weather;
+  PrimitiveWrapper autoSelect = PrimitiveWrapper(false);
 
-  _SettingsPageState(this.weather){
+  _SettingsPageState(this.weather, this.autoSelect){
     temperature = weather.unit;
   }
 
@@ -38,7 +42,7 @@ class _SettingsPageState extends State <SettingsPage> {
               onChanged: (int newValue) {
                 setState(() {
                  temperature = newValue;
-                 updatePrefs(); 
+                 updateTempPrefs(); 
                 });
               },
               items: <DropdownMenuItem<int>> [
@@ -54,14 +58,29 @@ class _SettingsPageState extends State <SettingsPage> {
             ),
           ),
           Divider(),
+          SwitchListTile(
+            title: Text("Auto-Select"),
+            value: autoSelect.primitive,
+            onChanged: (bool newVal) {
+              setState(() {
+               updateSelectPrefs(); 
+              });
+            },
+          ),
         ],
       ),
     );
   }
 
-  void updatePrefs() async{
+  void updateTempPrefs() async{
     weather.convertUnits();
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setInt('temp_units', weather.unit);
+    prefs.setInt("temp_units", weather.unit);
+  }
+
+  void updateSelectPrefs() async {
+    autoSelect.primitive = !autoSelect.primitive;
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setBool("auto_select", autoSelect.primitive);
   }
 }

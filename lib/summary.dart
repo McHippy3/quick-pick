@@ -5,14 +5,15 @@ import 'custom_icons.dart';
 import 'dart:io';
 
 class SummaryPage extends StatelessWidget {
-  final bool isLoading;
+  final bool isLoading, autoSelect;
   final Weather weather;
   final List<List<ClothingItem>> clothes;
   final Function callback;
   final File clothingFile;
 
   SummaryPage(
-      {this.isLoading,
+      {this.autoSelect,
+      this.isLoading,
       this.weather,
       this.clothes,
       this.callback,
@@ -88,17 +89,20 @@ class SummaryPage extends StatelessWidget {
     ];
     for (List<ClothingItem> list in clothes) {
       for (ClothingItem item in list) {
+        //limit number of each type of clothing item if autoSelect is on
         if (item.temps.contains(weather.tempZone) &&
-            item.available &&
-            remainingTypes.contains(item.type)) {
+            ((item.available && remainingTypes.contains(item.type) ||
+                !autoSelect))) {
           //Ensuring that "top & bottom" doesn't overlap with an individual top and an individual bottom
-          if (item.type == "top & bottom") {
-            remainingTypes.remove("top");
-            remainingTypes.remove("bottom");
-          } else if (item.type == "top" || item.type == "bottom") {
-            remainingTypes.remove("top & bottom");
+          if (autoSelect) {
+            if (item.type == "top & bottom") {
+              remainingTypes.remove("top");
+              remainingTypes.remove("bottom");
+            } else if (item.type == "top" || item.type == "bottom") {
+              remainingTypes.remove("top & bottom");
+            }
+            remainingTypes.remove(item.type);
           }
-          remainingTypes.remove(item.type);
 
           clothingList.add(
             Padding(
