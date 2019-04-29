@@ -198,6 +198,7 @@ class _MainPageState extends State<MainPage> {
     if (prefUnits == null || autoSelect.primitive == null) {
       prefs.setInt('temp_units', weather.unit);
       prefs.setBool('auto_select', true);
+      autoSelect.primitive = true;
     }
     if (prefUnits != weather.unit) {
       weather.convertUnits();

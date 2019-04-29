@@ -22,6 +22,7 @@ class _SettingsPageState extends State <SettingsPage> {
   PrimitiveWrapper autoSelect = PrimitiveWrapper(false);
 
   _SettingsPageState(this.weather, this.autoSelect){
+    print(autoSelect.primitive);
     temperature = weather.unit;
   }
 
