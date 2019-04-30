@@ -18,7 +18,6 @@ import 'helpers.dart';
  * save most recent selection date and stuff like that
  * save record
  * animations
- * make apk
  * **/
 
 void main() => runApp(

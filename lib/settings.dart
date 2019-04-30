@@ -2,26 +2,26 @@ import 'package:flutter/material.dart';
 import 'weather.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'helpers.dart';
+import 'citations.dart';
 
-class SettingsPage extends StatefulWidget{
-  
+class SettingsPage extends StatefulWidget {
   final Weather weather;
   final PrimitiveWrapper autoSelect;
-  
+
   SettingsPage(this.weather, this.autoSelect);
-  
+
   @override
   State<StatefulWidget> createState() {
     return _SettingsPageState(weather, autoSelect);
   }
 }
 
-class _SettingsPageState extends State <SettingsPage> {
+class _SettingsPageState extends State<SettingsPage> {
   int temperature;
   Weather weather;
   PrimitiveWrapper autoSelect = PrimitiveWrapper(false);
 
-  _SettingsPageState(this.weather, this.autoSelect){
+  _SettingsPageState(this.weather, this.autoSelect) {
     print(autoSelect.primitive);
     temperature = weather.unit;
   }
@@ -38,20 +38,20 @@ class _SettingsPageState extends State <SettingsPage> {
           ListTile(
             title: Text("Preferred Units"),
             subtitle: Text("Select default unit of temperature"),
-            trailing: DropdownButton <int> (
+            trailing: DropdownButton<int>(
               value: temperature,
               onChanged: (int newValue) {
                 setState(() {
-                 temperature = newValue;
-                 updateTempPrefs(); 
+                  temperature = newValue;
+                  updateTempPrefs();
                 });
               },
-              items: <DropdownMenuItem<int>> [
+              items: <DropdownMenuItem<int>>[
                 DropdownMenuItem<int>(
                   value: 0,
                   child: Text("Celcius"),
                 ),
-                DropdownMenuItem <int>(
+                DropdownMenuItem<int>(
                   value: 1,
                   child: Text("Fahrenheit"),
                 ),
@@ -64,16 +64,26 @@ class _SettingsPageState extends State <SettingsPage> {
             value: autoSelect.primitive,
             onChanged: (bool newVal) {
               setState(() {
-               updateSelectPrefs(); 
+                updateSelectPrefs();
               });
             },
           ),
+          Divider(),
+          ListTile(
+            title: Text("Citations"),
+            onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => CitationsPage(),
+                  ),
+                ),
+          )
         ],
       ),
     );
   }
 
-  void updateTempPrefs() async{
+  void updateTempPrefs() async {
     weather.convertUnits();
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setInt("temp_units", weather.unit);
