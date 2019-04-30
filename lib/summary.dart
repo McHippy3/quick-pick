@@ -90,8 +90,8 @@ class SummaryPage extends StatelessWidget {
     for (List<ClothingItem> list in clothes) {
       for (ClothingItem item in list) {
         //limit number of each type of clothing item if autoSelect is on
-        if (item.temps.contains(weather.tempZone) &&
-            ((item.available && remainingTypes.contains(item.type) ||
+        if (item.available && item.temps.contains(weather.tempZone) &&
+            ((remainingTypes.contains(item.type) ||
                 !autoSelect))) {
           //Ensuring that "top & bottom" doesn't overlap with an individual top and an individual bottom
           if (autoSelect) {
