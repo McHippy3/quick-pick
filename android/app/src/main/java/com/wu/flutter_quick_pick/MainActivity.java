@@ -1,4 +1,4 @@
-package com.example.flutter_quick_pick;
+package com.wu.flutter_quick_pick;
 
 import android.os.Bundle;
 import io.flutter.app.FlutterActivity;
