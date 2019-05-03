@@ -127,71 +127,38 @@ class _AddEditPageState extends State<AddEditPage> {
                 image == null ? Text("No Image Selected") : Image.file(image),
           ),
         ),
-        Padding(
-          padding: EdgeInsets.all(deviceInfo.size.width / 25),
-          child: Text(
-            "Clothing Type:",
-            style: TextStyle(fontSize: deviceInfo.size.width / 20),
+        ListTile(
+          title: Text("Clothing Type", style: TextStyle(fontSize: deviceInfo.size.width/20),),
+          trailing: DropdownButton(
+            value: type,
+            items: <DropdownMenuItem <ClothingType>>[
+              DropdownMenuItem(
+                value: ClothingType.top,
+                child: Text("Top"),
+              ),
+              DropdownMenuItem(
+                value: ClothingType.bottom,
+                child: Text("Bottom"),
+              ),
+              DropdownMenuItem(
+                value: ClothingType.topBot,
+                child: Text("Top & Bottom"),
+              ),
+              DropdownMenuItem(
+                value: ClothingType.socks,
+                child: Text("Socks"),
+              ),
+              DropdownMenuItem(
+                value: ClothingType.hat,
+                child: Text("Hat"),
+              ),
+            ],
+            onChanged: (ClothingType newType){
+              setState(() {
+                type = newType;
+              });
+            },
           ),
-        ),
-        Column(
-          children: <Widget>[
-            RadioListTile<ClothingType>(
-              title: Text("Top"),
-              value: ClothingType.top,
-              groupValue: type,
-              onChanged: (ClothingType type) {
-                setState(() {
-                  this.type = type;
-                  _checkFilled();
-                });
-              },
-            ),
-            RadioListTile<ClothingType>(
-              title: Text("Bottom"),
-              value: ClothingType.bottom,
-              groupValue: type,
-              onChanged: (ClothingType type) {
-                setState(() {
-                  this.type = type;
-                  _checkFilled();
-                });
-              },
-            ),
-            RadioListTile<ClothingType>(
-              title: Text("Top & Bottom"),
-              value: ClothingType.topBot,
-              groupValue: type,
-              onChanged: (ClothingType type) {
-                setState(() {
-                  this.type = type;
-                  _checkFilled();
-                });
-              },
-            ),
-            RadioListTile<ClothingType>(
-              title: Text("Socks"),
-              value: ClothingType.socks,
-              groupValue: type,
-              onChanged: (ClothingType type) {
-                setState(() {
-                  this.type = type;
-                  _checkFilled();
-                });
-              },
-            ),
-            RadioListTile<ClothingType>(
-              title: Text("Hat"),
-              value: ClothingType.hat,
-              groupValue: type,
-              onChanged: (ClothingType type) {
-                setState(() {
-                  this.type = type;
-                  _checkFilled();
-                });
-              },
-            ),
-          ],
         ),
         Padding(
           padding: EdgeInsets.all(deviceInfo.size.width / 25),
