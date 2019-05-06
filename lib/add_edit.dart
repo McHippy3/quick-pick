@@ -1,16 +1,20 @@
 import 'package:flutter/material.dart';
 import 'row_textfield.dart';
 import 'dart:io';
+import 'weather.dart';
+import 'helpers.dart';
 import 'clothes.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:flutter_range_slider/flutter_range_slider.dart';
 
 class AddEditPage extends StatefulWidget {
   final File clothingFile;
-  final List<List <ClothingItem>> clothes;
+  final List<List<ClothingItem>> clothes;
   final ClothingItem editItem;
+  final Weather weather;
 
-  AddEditPage(this.clothingFile, this.clothes, {this.editItem});
+  AddEditPage(this.clothingFile, this.clothes, this.weather, {this.editItem});
 
   @override
   State<StatefulWidget> createState() {
@@ -21,7 +25,7 @@ class AddEditPage extends StatefulWidget {
       'cold': false,
     };
 
-    return _AddEditPageState(temperatures, clothingFile, clothes,
+    return _AddEditPageState(temperatures, clothingFile, clothes, weather,
         editItem: editItem);
   }
 }
@@ -30,16 +34,18 @@ enum ClothingType { top, bottom, topBot, socks, hat }
 
 /// If an item is passed in, then the page is for editing, else for adding
 class _AddEditPageState extends State<AddEditPage> {
+  final Weather weather;
   TextEditingController _nameController;
   Map<String, bool> temperatures;
   ClothingType type;
   File clothingFile, image;
-  List<List <ClothingItem>> clothes;
+  List<List<ClothingItem>> clothes;
   IconButton _submitButton;
   ClothingItem editItem;
   String appBarTitle;
+  int lowTemp = -50, highTemp = 50;
 
-  _AddEditPageState(this.temperatures, this.clothingFile, this.clothes,
+  _AddEditPageState(this.temperatures, this.clothingFile, this.clothes, this.weather,
       {this.editItem}) {
     _nameController = TextEditingController();
     _submitButton = IconButton(icon: Icon(Icons.check), onPressed: null);
@@ -128,10 +134,13 @@ class _AddEditPageState extends State<AddEditPage> {
           ),
         ),
         ListTile(
-          title: Text("Clothing Type", style: TextStyle(fontSize: deviceInfo.size.width/20),),
+          title: Text(
+            "Clothing Type",
+            style: TextStyle(fontSize: deviceInfo.size.width / 20),
+          ),
           trailing: DropdownButton(
             value: type,
-            items: <DropdownMenuItem <ClothingType>>[
+            items: <DropdownMenuItem<ClothingType>>[
               DropdownMenuItem(
                 value: ClothingType.top,
                 child: Text("Top"),
@@ -153,7 +162,7 @@ class _AddEditPageState extends State<AddEditPage> {
                 child: Text("Hat"),
               ),
             ],
-            onChanged: (ClothingType newType){
+            onChanged: (ClothingType newType) {
               setState(() {
                 type = newType;
               });
@@ -163,7 +172,7 @@ class _AddEditPageState extends State<AddEditPage> {
         Padding(
           padding: EdgeInsets.all(deviceInfo.size.width / 25),
           child: Text(
-            "Apropriate Temperatures:",
+            "Temperature Range:",
             style: TextStyle(fontSize: deviceInfo.size.width / 20),
           ),
         ),
@@ -181,6 +190,30 @@ class _AddEditPageState extends State<AddEditPage> {
               },
             );
           }).toList(),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Row(
+            children: <Widget>[
+              Text(getFormattedTemp(weather.unit, lowTemp.toDouble())),
+              Expanded(
+                child: RangeSlider(
+                  min: -50.0,
+                  max: 50.0,
+                  divisions: 100,
+                  lowerValue: lowTemp.toDouble(),
+                  upperValue: highTemp.toDouble(),
+                  onChanged: (double low, double high) {
+                    setState(() {
+                      lowTemp = low.round();
+                      highTemp = high.round();
+                    });
+                  },
+                ),
+              ),
+              Text(getFormattedTemp(weather.unit, highTemp.toDouble())),
+            ],
+          ),
         ),
       ]),
     );
@@ -219,9 +252,9 @@ class _AddEditPageState extends State<AddEditPage> {
     //Id
     //highest current id + 1
     newItem.id = 1;
-    for(List <ClothingItem> list in clothes){
-      for(ClothingItem item in list){
-        if(item.id >= newItem.id){
+    for (List<ClothingItem> list in clothes) {
+      for (ClothingItem item in list) {
+        if (item.id >= newItem.id) {
           newItem.id = item.id + 1;
         }
       }
@@ -282,7 +315,8 @@ class _AddEditPageState extends State<AddEditPage> {
     clothingFile.writeAsStringSync(
         "#${newItem.id}\n${newItem.name}\n${newItem.type}\n${newItem.available.toString()}\n${newItem.tempsAsString}\n${newItem.imagePath}\n",
         mode: FileMode.writeOnlyAppend);
-    Navigator.of(context).pushNamedAndRemoveUntil("/main", (Route <dynamic> route) => false);
+    Navigator.of(context)
+        .pushNamedAndRemoveUntil("/main", (Route<dynamic> route) => false);
   }
 
   void _editClothingItem() async {
@@ -328,19 +362,20 @@ class _AddEditPageState extends State<AddEditPage> {
     }
     //Creating image
     if (image != null && image.path != editItem.imagePath) {
-      if(File(editItem.imagePath).existsSync()){
+      if (File(editItem.imagePath).existsSync()) {
         File(editItem.imagePath).deleteSync();
       }
       String path = (await getApplicationDocumentsDirectory()).path;
       path = path + "/${editItem.id}." + (image.path.split(".")).last;
       editItem.imagePath = path;
       await image.copy(path);
-    } else if(image == null){
+    } else if (image == null) {
       editItem.imagePath = "n/a";
     }
     imageCache.clear();
 
     ClothingItem.rewriteFile(clothes, clothingFile);
-    Navigator.of(context).pushNamedAndRemoveUntil("/main", (Route <dynamic> route) => false);
+    Navigator.of(context)
+        .pushNamedAndRemoveUntil("/main", (Route<dynamic> route) => false);
   }
 }

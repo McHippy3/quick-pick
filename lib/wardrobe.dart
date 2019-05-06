@@ -2,26 +2,29 @@ import 'package:flutter/material.dart';
 import 'clothes.dart';
 import 'dart:io';
 import 'item_page.dart';
+import 'weather.dart';
 import 'custom_icons.dart';
 
 /// Displays all items in the users 'wardrobe', allows deletion or modification of items
 class WardrobePage extends StatefulWidget {
   final List<List<ClothingItem>> clothes;
   final File clothingFile;
+  final Weather weather;
 
-  WardrobePage(this.clothes, this.clothingFile);
+  WardrobePage(this.clothes, this.clothingFile, this.weather);
 
   @override
   State<StatefulWidget> createState() {
-    return _WardrobePageState(this.clothes, this.clothingFile);
+    return _WardrobePageState(this.clothes, this.clothingFile, this.weather);
   }
 }
 
 class _WardrobePageState extends State<WardrobePage> {
   final List<List<ClothingItem>> clothes;
   final File clothingFile;
+  final Weather weather;
 
-  _WardrobePageState(this.clothes, this.clothingFile);
+  _WardrobePageState(this.clothes, this.clothingFile, this.weather);
 
   Widget build(BuildContext context) {
     MediaQueryData deviceInfo = MediaQuery.of(context);
@@ -60,7 +63,7 @@ class _WardrobePageState extends State<WardrobePage> {
                       context,
                       MaterialPageRoute(
                           builder: (context) =>
-                              ItemPage(item, clothingFile, clothes)));
+                              ItemPage(item, clothingFile, clothes, weather)));
                 },
                 leading: item.icon,
                 title: Text(item.name),

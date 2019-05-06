@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'weather.dart';
 import 'clothes.dart';
 import 'custom_icons.dart';
+import 'helpers.dart';
 import 'dart:io';
 
 class SummaryPage extends StatelessWidget {
@@ -45,7 +46,7 @@ class SummaryPage extends StatelessWidget {
               style: TextStyle(fontWeight: FontWeight.normal, fontSize: 20),
             ),
             Text(
-              weather.getFormattedTemp().toString(),
+              getFormattedTemp(weather.unit, weather.temperature),
               textAlign: TextAlign.center,
               style: TextStyle(fontWeight: FontWeight.normal, fontSize: 20),
             ),

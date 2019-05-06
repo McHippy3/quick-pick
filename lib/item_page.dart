@@ -2,17 +2,19 @@ import 'package:flutter/material.dart';
 import 'clothes.dart';
 import 'dart:io';
 import 'add_edit.dart';
+import 'weather.dart';
 
 class ItemPage extends StatefulWidget {
   final ClothingItem clothingItem;
   final File clothingFile;
   final List<List<ClothingItem>> clothes;
+  final Weather weather;
 
-  ItemPage(this.clothingItem, this.clothingFile, this.clothes);
+  ItemPage(this.clothingItem, this.clothingFile, this.clothes, this.weather);
 
   @override
   State<StatefulWidget> createState() {
-    return _ItemPageState(clothingItem, clothingFile, clothes);
+    return _ItemPageState(clothingItem, clothingFile, clothes, weather);
   }
 }
 
@@ -22,8 +24,9 @@ class _ItemPageState extends State<ItemPage> {
   final List<List<ClothingItem>> clothes;
   Image clothingImage;
   bool isLoading = false;
+  final Weather weather;
 
-  _ItemPageState(this.clothingItem, this.clothingFile, this.clothes);
+  _ItemPageState(this.clothingItem, this.clothingFile, this.clothes, this.weather);
 
   @override
   void initState() {
@@ -56,7 +59,7 @@ class _ItemPageState extends State<ItemPage> {
             onPressed: () => Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => AddEditPage(clothingFile, clothes,
+                    builder: (context) => AddEditPage(clothingFile, clothes, weather,
                         editItem: clothingItem))),
           ),
           IconButton(

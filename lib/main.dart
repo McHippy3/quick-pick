@@ -66,7 +66,7 @@ class _MainPageState extends State<MainPage> {
                       context,
                       MaterialPageRoute(
                         builder: (context) =>
-                            WardrobePage(clothes, clothingFile),
+                            WardrobePage(clothes, clothingFile, weather),
                       ),
                     ),
           ),
@@ -91,7 +91,7 @@ class _MainPageState extends State<MainPage> {
                   context,
                   MaterialPageRoute(
                     builder: (context) =>
-                        AddEditPage(this.clothingFile, this.clothes),
+                        AddEditPage(this.clothingFile, this.clothes, this.weather),
                   ),
                 ),
       ),

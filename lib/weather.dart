@@ -57,17 +57,6 @@ class Weather {
   }
 
   /* METHODS */
-
-  String getFormattedTemp() {
-    //Metric
-    if (unit == 0) {
-      return "$temperature \u00B0C";
-    }
-    //Imperial
-    else
-      return "$temperature \u00B0F";
-  }
-
   void convertUnits() {
     //Converting to imperial
     if (unit == 0) {
