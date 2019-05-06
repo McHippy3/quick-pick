@@ -43,17 +43,30 @@ class _AddEditPageState extends State<AddEditPage> {
   IconButton _submitButton;
   ClothingItem editItem;
   String appBarTitle;
-  int lowTemp = -50, highTemp = 50;
+  int lowTemp, highTemp;
 
-  _AddEditPageState(this.temperatures, this.clothingFile, this.clothes, this.weather,
+  _AddEditPageState(
+      this.temperatures, this.clothingFile, this.clothes, this.weather,
       {this.editItem}) {
     _nameController = TextEditingController();
     _submitButton = IconButton(icon: Icon(Icons.check), onPressed: null);
     if (editItem == null) {
       appBarTitle = "Add New Item";
+      if(weather.unit == 0){
+        lowTemp = -40;
+        highTemp = 60;
+      }
+      else{
+        lowTemp = -40;
+        highTemp = 135;
+      }
     }
     //Setting default values if in editing mode
     else {
+      ///Temporary:
+      lowTemp = 0;
+      highTemp = 0;
+      
       appBarTitle = "Edit ${editItem.name}";
       _nameController.text = editItem.name;
       //Default type
@@ -78,7 +91,6 @@ class _AddEditPageState extends State<AddEditPage> {
       for (String key in defTemps) {
         temperatures[key] = true;
       }
-
       if (editItem.imagePath != "n/a") {
         image = File(editItem.imagePath);
       }
@@ -198,9 +210,9 @@ class _AddEditPageState extends State<AddEditPage> {
               Text(getFormattedTemp(weather.unit, lowTemp.toDouble())),
               Expanded(
                 child: RangeSlider(
-                  min: -50.0,
-                  max: 50.0,
-                  divisions: 100,
+                  min: weather.unit == 0 ? -40.0 : -40.0,
+                  max: weather.unit == 0 ? 60.0 : 135.0,
+                  divisions: weather.unit == 0 ? 100 : 175,
                   lowerValue: lowTemp.toDouble(),
                   upperValue: highTemp.toDouble(),
                   onChanged: (double low, double high) {
