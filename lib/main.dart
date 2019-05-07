@@ -11,14 +11,9 @@ import 'package:path_provider/path_provider.dart';
 import 'wardrobe.dart';
 import 'settings.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:package_info/package_info.dart';
 import 'helpers.dart';
-
-/** 
- * TODOS: 
- * save most recent selection date and stuff like that
- * save record
- * animations
- * **/
+import 'update.dart';
 
 void main() => runApp(
       MaterialApp(
@@ -37,8 +32,6 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
-  num lat;
-  num lon;
   bool isLoading;
   PrimitiveWrapper autoSelect = PrimitiveWrapper(false);
   Weather weather;
@@ -111,6 +104,7 @@ class _MainPageState extends State<MainPage> {
   void _fetchWeather() async {
     isLoading = true;
     //Getting location
+    num lat, lon;
     try {
       var location = new Location();
       Map<String, double> currentLoc = await location.getLocation();
@@ -190,9 +184,12 @@ class _MainPageState extends State<MainPage> {
 
   //Reads from user's shared preferences
   void updatePreferences() async {
+
     SharedPreferences prefs = await SharedPreferences.getInstance();
     int prefUnits = prefs.getInt('temp_units');
     autoSelect.primitive = prefs.getBool('auto_select');
+    String currentVersion = prefs.getString('version');
+
     //Create the shared preference if it doesn't exist
     if (prefUnits == null || autoSelect.primitive == null) {
       prefs.setInt('temp_units', weather.unit);
@@ -202,6 +199,16 @@ class _MainPageState extends State<MainPage> {
     if (prefUnits != weather.unit) {
       weather.convertUnits();
     }
+
+    //Creating shared preference for currentVersion
+    if(currentVersion == null){
+      prefs.setString('version', (await PackageInfo.fromPlatform()).version);
+      currentVersion = prefs.getString('version');
+    }
+    String newestVersion = (await PackageInfo.fromPlatform()).version;
+
+    //Check to see if edits must be made to accomodate current version
+    checkForUpdates(clothingFile, currentVersion, newestVersion);
 
     //Refresh with new info
     setState(() {

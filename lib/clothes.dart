@@ -9,6 +9,7 @@ class ClothingItem {
   String name, type, tempsAsString = "", imagePath;
   bool available;
   List<Temperatures> temps = [];
+  double lowTemp, highTemp;
   Icon icon;
 
   //Pass in information from file
