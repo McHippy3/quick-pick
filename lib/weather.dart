@@ -31,7 +31,7 @@ class Weather {
       this.description,
       this.temperature,
       this.imageId,
-      this.unit = 0}) {
+      this.unit}) {
     //Setting temperature zone
     if (temperature > 20) {
       tempZone = Temperatures.hot;
@@ -44,7 +44,7 @@ class Weather {
     }
   }
 
-  factory Weather.fromJson(Map<String, dynamic> bodyContent) {
+  factory Weather.fromJson(Map<String, dynamic> bodyContent, int unit) {
     //Gathering Description (requires extra step since it is contained within a list)
     List<dynamic> weatherList = new List<dynamic>.from(bodyContent['weather']);
     Map<String, dynamic> weatherSpecifics = weatherList[0];
@@ -53,7 +53,8 @@ class Weather {
         city: bodyContent['name'],
         description: weatherSpecifics['main'],
         temperature: bodyContent['main']['temp'],
-        imageId: weatherSpecifics['icon']);
+        imageId: weatherSpecifics['icon'],
+        unit: unit);
   }
 
   /* METHODS */

@@ -33,6 +33,7 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
   bool isLoading;
+  int prefUnits;
   PrimitiveWrapper autoSelect = PrimitiveWrapper(false);
   Weather weather;
   List<List<ClothingItem>> clothes = [];
@@ -41,7 +42,7 @@ class _MainPageState extends State<MainPage> {
   @override
   void initState() {
     super.initState();
-    _fetchWeather();
+    _updatePreferences();
   }
 
   @override
@@ -102,7 +103,6 @@ class _MainPageState extends State<MainPage> {
   //Made partly with the help of https://dragosholban.com/2018/07/01/how-to-build-a-simple-weather-app-in-flutter/ and https://flutter.dev/docs/cookbook/networking/fetch-data
   //Weather information and images provided by https://openweathermap.org/api
   void _fetchWeather() async {
-    isLoading = true;
     //Getting location
     num lat, lon;
     try {
@@ -115,12 +115,21 @@ class _MainPageState extends State<MainPage> {
       lon = 0;
     }
 
+    //Setting temperature unit
+    String tempUnits;
+    if(prefUnits == 0){
+      tempUnits = "metric";
+    }
+    else{
+      tempUnits = "imperial";
+    }
+
     //Getting weather data
     http.Response response = await http.get(
-        "http://api.openweathermap.org/data/2.5/weather?lat=${lat.toString()}&lon=${lon.toString()}&appid=7000894b3eefc3b3bee0fa5cc2152fb1&units=metric");
+        "http://api.openweathermap.org/data/2.5/weather?lat=${lat.toString()}&lon=${lon.toString()}&appid=7000894b3eefc3b3bee0fa5cc2152fb1&units=$tempUnits");
 
     if (response.statusCode == 200) {
-      weather = Weather.fromJson(json.decode(response.body));
+      weather = Weather.fromJson(json.decode(response.body), prefUnits);
     } else {
       throw Exception("Failed to retrieve weather data");
     }
@@ -178,15 +187,18 @@ class _MainPageState extends State<MainPage> {
       }
     }
 
-    //Setting preferred options
-    updatePreferences();
+    //Updating GUI with new info
+    setState(() { 
+      isLoading = false;
+    });
   }
 
   //Reads from user's shared preferences
-  void updatePreferences() async {
+  void _updatePreferences() async {
+    isLoading = true;
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    int prefUnits = prefs.getInt('temp_units');
+    prefUnits = prefs.getInt('temp_units');
     autoSelect.primitive = prefs.getBool('auto_select');
     String currentVersion = prefs.getString('version');
 
@@ -196,24 +208,17 @@ class _MainPageState extends State<MainPage> {
       prefs.setBool('auto_select', true);
       autoSelect.primitive = true;
     }
-    if (prefUnits != weather.unit) {
-      weather.convertUnits();
-    }
 
     //Creating shared preference for currentVersion
     if(currentVersion == null){
       prefs.setString('version', (await PackageInfo.fromPlatform()).version);
       currentVersion = prefs.getString('version');
     }
-    String newestVersion = (await PackageInfo.fromPlatform()).version;
 
-    //Check to see if edits must be made to accomodate current version
-    checkForUpdates(clothingFile, currentVersion, newestVersion);
+    checkForUpdates(currentVersion);
 
-    //Refresh with new info
-    setState(() {
-      isLoading = false;
-    });
+    //Next step of initialization
+    _fetchWeather();
   }
 
   //Used for callback
