@@ -147,11 +147,11 @@ class _MainPageState extends State<MainPage> {
     if (!(await clothingFile.exists())) {
       clothingFile.createSync();
     }
-    List<String> clothingInfo = (await clothingFile.readAsString())
+    List<String> content = (await clothingFile.readAsString())
         .split("\n")
         .where((line) => line != "")
         .toList();
-    print(clothingInfo.toString());
+    print(content.toString());
 
     //Initializing the five lists within clothes, one for each type of clothing
     //Order: top, bottom, top & bottom, socks, hat
@@ -160,14 +160,14 @@ class _MainPageState extends State<MainPage> {
     }
 
     //Converting contents of file into a list of ClothingItem objects
-    for (int i = 0; i < clothingInfo.length; i += 6) {
+    for (int i = 0; i < content.length; i += 6) {
       ClothingItem item = ClothingItem(
-          int.parse(clothingInfo[i].substring(1)),
-          clothingInfo[i + 1],
-          clothingInfo[i + 2],
-          clothingInfo[i + 3],
-          clothingInfo[i + 4].split(" "),
-          clothingInfo[i + 5]);
+          int.parse(content[i].substring(1)),
+          content[i + 1],
+          content[i + 2],
+          content[i + 3],
+          content[i + 4].split(" "),
+          content[i + 5]);
       switch (item.type) {
         case "top":
           clothes[0].add(item);
